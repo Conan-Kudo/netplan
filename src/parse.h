@@ -154,14 +154,30 @@ typedef struct {
 
 typedef struct {
     guint family;
+    char* type;
+    char* scope;
+    char* table;
 
+    char* from;
     char* to;
     char* via;
+
+    gboolean onlink;
 
     /* valid metrics are valid positive integers.
      * invalid metrics are represented by METRIC_UNSPEC */
     guint metric;
 } ip_route;
+
+typedef struct {
+    char* from;
+    char* to;
+
+    char* table;
+    guint priority;
+    char* fwmark;
+    char* tos;
+} ip_rule;
 
 /* Written/updated by parse_yaml(): char* id →  net_definition */
 extern GHashTable* netdefs;

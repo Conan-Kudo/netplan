@@ -47,6 +47,27 @@ reload_udevd(void)
 };
 
 static void
+routing_iterator(gpointer key, gpointer value, gpointer user_data)
+{
+    if (write_networkd_global_ip_route((ip_route*) value, (const char*) user_data))
+        any_networkd = TRUE;
+}
+
+static void
+rule_iterator(gpointer key, gpointer value, gpointer user_data)
+{
+    if (write_networkd_global_ip_rule((ip_rule*) value, (const char*) user_data))
+        any_networkd = TRUE;
+}
+
+static void
+write_global_routing(GHashTable* ip_routing, GHashTable* ip_rules)
+{
+    g_hash_table_foreach(ip_routing, routing_iterator, rootdir);
+    g_hash_table_foreach(ip_rules, rule_iterator, rootdir);
+}
+
+static void
 nd_iterator(gpointer key, gpointer value, gpointer user_data)
 {
     if (write_networkd_conf((net_definition*) value, (const char*) user_data))
@@ -161,6 +182,7 @@ int main(int argc, char** argv)
         g_debug("Generating output files..");
         g_hash_table_foreach(netdefs, nd_iterator, rootdir);
         write_nm_conf_finish(rootdir);
+        write_global_routing(ip_routing, ip_rules);
 	/* We may have written .rules & .link files, thus we must
 	 * invalidate udevd cache of its config as by default it only
 	 * invalidates cache at most every 3 seconds. Not sure if this

@@ -50,6 +50,10 @@ GHashTable* netdefs;
  * existing definition */
 GHashTable* ids_in_file;
 
+/* Global IP rule/routes for all parsed config files */
+GHashTable* ip_routing;
+GHashTable* ip_rules;
+
 /* List of "seen" ids not found in netdefs yet by the parser.
  * These are removed when it exists in this list and we reach the point of
  * creating a netdef for that id; so by the time we're done parsing the yaml
