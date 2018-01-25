@@ -51,7 +51,7 @@ static const char* const netdef_backend_to_name[_BACKEND_MAX] = {
 
 typedef struct missing_node {
     char* netdef_id;
-    yaml_node_t* node;
+    const yaml_node_t* node;
 } missing_node;
 
 /**
@@ -135,6 +135,7 @@ typedef struct net_definition {
     struct {
         guint ageing_time;
         guint priority;
+        guint port_priority;
         guint forward_delay;
         guint hello_time;
         guint max_age;

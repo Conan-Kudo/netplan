@@ -257,10 +257,15 @@ Properties for device type ``bridges:``
           database after a packet is received.
 
      ``priority`` (scalar)
-     :    Set the priority value for the bridge. This value should be an
+     :    Set the priority value for the bridge. This value should be a
           number between ``0`` and ``65535``. Lower values mean higher
           priority. The bridge with the higher priority will be elected as
           the root bridge.
+
+     ``port-priority`` (scalar)
+     :    Set the port priority to <priority>. The priority value is
+          a number between ``0`` and ``63``. This metric is used in the
+          designated port and root port selection algorithms.
 
      ``forward-delay`` (scalar)
      :    Specify the period of time the bridge will remain in Listening and
@@ -479,6 +484,10 @@ This is a complex example which shows most available features:
           nameservers:
             search: [foo.local, bar.local]
             addresses: [8.8.8.8]
+          routes:
+            - to: 0.0.0.0/0
+              via: 11.0.0.1
+              metric: 3
         lom:
           match:
             driver: ixgbe
@@ -515,10 +524,6 @@ This is a complex example which shows most available features:
           # IDs of the components; switchports expands into multiple interfaces
           interfaces: [wlp1s0, switchports]
           dhcp4: true
-      routes:
-       - to: 0.0.0.0/0
-         via: 11.0.0.1
-         metric: 3
 
 <!--- vim: ft=markdown
 -->

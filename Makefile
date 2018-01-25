@@ -2,9 +2,7 @@ BUILDFLAGS = \
 	-std=c99 \
 	-D_XOPEN_SOURCE=500 \
 	-Wall \
-	-Werror=incompatible-pointer-types \
-	-Werror=implicit-function-declaration \
-	-Werror=format \
+	-Werror \
 	$(NULL)
 
 SYSTEMD_GENERATOR_DIR=$(shell pkg-config --variable=systemdsystemgeneratordir systemd)
@@ -18,6 +16,7 @@ generate: src/generate.[hc] src/parse.[hc] src/util.[hc] src/networkd.[hc] src/n
 
 clean:
 	rm -f generate doc/*.html doc/*.[1-9]
+	rm -f *.gcda *.gcno generate.info
 	rm -rf test-coverage .coverage
 
 check: default linting
@@ -39,15 +38,14 @@ c-coverage:
 	lcov --directory . --capture -o generate.info
 	lcov --remove generate.info "/usr*" -o generate.info
 	genhtml -o test-coverage/C/ -t "generate test coverage" generate.info
-	@rm *.gcda *.gcno generate.info generate
-	@echo "generated report: file://$(CURDIR)/test-coverage/index.html"
-	@if grep headerCovTableEntryHi test-coverage/index.html | grep -qv '100.*%'; then \
+	@if grep headerCovTableEntryHi test-coverage/C/index.html | grep -qv '100.*%'; then \
 	    echo "FAIL: Test coverage not 100%!" >&2; exit 1; \
 	fi
 
 python-coverage:
 	python3-coverage html -d test-coverage/python --omit=/usr* || true
 	python3-coverage report --omit=/usr* --show-missing --fail-under=100
+	python3-coverage xml --omit=/usr* || true
 
 install: default
 	mkdir -p $(DESTDIR)/usr/sbin $(DESTDIR)/lib/netplan $(DESTDIR)/$(SYSTEMD_GENERATOR_DIR)
