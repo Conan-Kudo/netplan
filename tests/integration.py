@@ -365,6 +365,24 @@ class NetworkTestBase(unittest.TestCase):
 
 class _CommonTests:
 
+    def test_mapping_for_driver(self):
+        with open(self.config, 'w') as f:
+            f.write('''network:
+  renderer: %(r)s
+  wifis:
+    wifi_ifs:
+      match:
+        driver: mac80211_hwsim
+      dhcp4: yes
+      access-points:
+        "fake net": {}
+        decoy: {}''' % {'r': self.backend})
+        p = subprocess.Popen(['netplan', 'generate', '--mapping', 'mac80211_hwsim'],
+                             stdout=subprocess.PIPE)
+        out = p.communicate()[0]
+        self.assertEquals(p.returncode, 0)
+        self.assertIn(b'mac80211_hwsim', out)
+
     def test_eth_and_bridge(self):
         self.setup_eth(None)
         self.start_dnsmasq(None, self.dev_e2_ap)
