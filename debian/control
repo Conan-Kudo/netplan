@@ -5,6 +5,7 @@ Priority: important
 Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 9),
  pkg-config,
+ dh-python,
  libyaml-dev,
  libglib2.0-dev,
  uuid-dev,
@@ -23,12 +24,29 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${shlibs:Depends},
  ${misc:Depends},
+ ${python3:Depends},
  systemd,
- python3,
+Conflicts: netplan
+Description: YAML network configuration abstraction for various backends
+ netplan reads YAML network configuration files which are written
+ by administrators, installers, cloud image instantiations, or other OS
+ deployments. During early boot it then generates backend specific
+ configuration files in /run to hand off control of devices to a particular
+ networking daemon.
+ .
+ Currently supported backends are networkd and NetworkManager.
+
+Package: python3-netplan
+Section: python
+Architecture: any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ ${python3:Depends},
  python3-yaml,
 Suggests: network-manager | wpasupplicant
-Breaks: network-manager (<< 1.2.2-0ubuntu4~)
-Conflicts: netplan
+Breaks: network-manager (<< 1.2.2-0ubuntu4~), nplan (<< 0.34)
+Replaces: nplan (<< 0.34)
 Description: YAML network configuration abstraction for various backends
  netplan reads YAML network configuration files which are written
  by administrators, installers, cloud image instantiations, or other OS
