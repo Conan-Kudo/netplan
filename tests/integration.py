@@ -380,7 +380,7 @@ class _CommonTests:
         p = subprocess.Popen(['netplan', 'generate', '--mapping', 'mac80211_hwsim'],
                              stdout=subprocess.PIPE)
         out = p.communicate()[0]
-        self.assertEquals(p.returncode, 0)
+        self.assertEquals(p.returncode, 1)
         self.assertIn(b'mac80211_hwsim', out)
 
     def test_eth_and_bridge(self):
